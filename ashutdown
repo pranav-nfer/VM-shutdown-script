@@ -1,0 +1,21 @@
+#!/bin/bash
+COUNTER=0
+SLEEP_INTERVAL_SECONDS=5
+HALT_THRESHOLD=240 # (20 minutes / 5 second checks) = 240
+
+# Main loop
+while true; do
+  ACTIVE_SESSIONS=$(who | wc -l)
+  
+  if [ "$ACTIVE_SESSIONS" -eq 0 ]; then
+    COUNTER=$((COUNTER + 1))
+  else
+    COUNTER=0
+  fi
+  
+  if (( COUNTER > HALT_THRESHOLD )); then
+    shutdown now
+  fi
+  
+  sleep "${SLEEP_INTERVAL_SECONDS}"
+done
